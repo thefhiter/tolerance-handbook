@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tolerance Handbook</title>
+<meta name="description" content="Offline engineering tolerance handbook — ISO fits, general and geometric tolerances, threads, machine elements. English / Français.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E3A5F'/%3E%3Cpath d='M7 22h18M7 10h18M11 10v12M21 10v12' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+<script>
+  // Apply theme before first paint to avoid a flash.
+  try { var t = localStorage.getItem('th.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-controls="sidebar" aria-expanded="false" aria-label="Menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="brand" href="#/home">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6"/><path d="M7 22h18M7 10h18M11 10v12M21 10v12"/></svg>
+    <span class="brand-name" id="brandName">Tolerance Handbook</span>
+  </a>
+  <div class="topbar-actions">
+    <div class="seg lang-seg" role="group" aria-label="Language / Langue">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+    </div>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Theme">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+    </button>
+    <button class="icon-btn" id="printBtn" type="button" aria-label="Print">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
+    </button>
+  </div>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Sections">
+    <div class="search">
+      <label for="navSearch" class="sr-only" id="navSearchLabel">Search</label>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="navSearch" type="search" autocomplete="off" placeholder="Search…">
+    </div>
+    <div id="navList"></div>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+  <main id="main" tabindex="-1"></main>
+</div>
+
+<!-- Core, then calculation engines (DOM-free, unit-tested), then UI modules. -->
+<script src="js/core.js"></script>
+<script src="js/engine/iso286.js"></script>
+<script src="js/engine/general.js"></script>
+<script src="js/engine/threads.js"></script>
+<script src="js/engine/elements.js"></script>
+<script src="js/engine/appendix.js"></script>
+<script src="js/modules/home.js"></script>
+<script src="js/modules/fits.js"></script>
+<script src="js/modules/general.js"></script>
+<script src="js/modules/threads.js"></script>
+<script src="js/modules/elements.js"></script>
+<script src="js/modules/appendix.js"></script>
+<script>TH.start();</script>
+</body>
+</html>

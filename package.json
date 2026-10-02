@@ -1,0 +1,12 @@
+{
+  "name": "tolerance-handbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline bilingual (EN/FR) engineering tolerance handbook: ISO fits, general & geometric tolerances, threads, machine elements.",
+  "scripts": {
+    "test": "node --test \"tests/unit/*.test.cjs\"",
+    "e2e": "node tests/e2e/smoke.cjs",
+    "build": "node tools/build.cjs"
+  },
+  "license": "UNLICENSED"
+}
