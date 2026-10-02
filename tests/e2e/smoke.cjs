@@ -1,23 +1,31 @@
 // End-to-end smoke test in real Chrome: every page renders in EN and FR, no script errors,
 // no horizontal page scroll at phone and desktop widths, key calculators give known answers.
 // Usage: node tests/e2e/smoke.cjs [path/to/page.html] [--shots]   (needs the `playwright` package resolvable)
+//        node tests/e2e/smoke.cjs --cdp http://127.0.0.1:9222        (drives the running desktop exe started with
+//                                                                     TOLERANCE_HANDBOOK_DEBUG=1, through WebView2)
 const path = require('path');
 const { chromium } = require('playwright');
 
-const target = process.argv.slice(2).find((a) => !a.startsWith('--')) || path.join(__dirname, '..', '..', 'index.html');
+const CDP = process.argv.includes('--cdp') ? process.argv[process.argv.indexOf('--cdp') + 1] : null;
+const target = process.argv.slice(2).find((a) => !a.startsWith('--') && a !== CDP) || path.join(__dirname, '..', '..', 'index.html');
 const URL = require('url').pathToFileURL(path.resolve(target)).href;
 const SHOTS = process.argv.includes('--shots');
 const fails = [];
 const fail = (m) => { fails.push(m); console.log('FAIL', m); };
 
 (async () => {
-  const browser = await chromium.launch({ channel: 'chrome' });
+  const browser = CDP ? await chromium.connectOverCDP(CDP) : await chromium.launch({ channel: 'chrome' });
   for (const vp of [{ width: 1366, height: 860 }, { width: 375, height: 760 }]) {
-    const page = await browser.newPage({ viewport: vp });
+    const page = CDP ? browser.contexts()[0].pages()[0] : await browser.newPage({ viewport: vp });
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-    await page.goto(URL + '#/home');
+    if (CDP) {
+      await page.setViewportSize(vp);
+      await page.evaluate(() => { location.hash = '#/home'; });
+      await page.reload();
+      console.log('desktop app page:', page.url());
+    } else await page.goto(URL + '#/home');
     const ids = await page.evaluate(() => TH.modules.map((m) => m.id));
     for (const lang of ['en', 'fr']) {
       await page.evaluate((l) => TH.setLang(l), lang);
@@ -53,9 +61,9 @@ const fail = (m) => { fails.push(m); console.log('FAIL', m); };
     txt = await page.textContent('.page');
     if (!/0,048 mm/.test(txt) || !/Ajustement avec serrage/.test(txt)) fail('fits FR: expected decimal comma and French fit type');
     if (errors.length) fail(`${vp.width}: script errors: ${[...new Set(errors)].join(' | ')}`);
-    await page.close();
+    if (!CDP) await page.close();
   }
-  await browser.close();
+  if (!CDP) await browser.close();
   console.log(fails.length ? `\n${fails.length} failure(s)` : '\nE2E OK');
   process.exit(fails.length ? 1 : 0);
 })();

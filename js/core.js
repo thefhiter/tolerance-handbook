@@ -336,6 +336,15 @@
     var b = document.getElementById('menuBtn'); if (b) b.setAttribute('aria-expanded', 'false');
   }
 
+  /* Desktop host (WebView2): tell the native window which theme is showing so its title bar matches. */
+  function notifyHostTheme() {
+    var wv = g.chrome && g.chrome.webview;
+    if (!wv) return;
+    var root = document.documentElement;
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark' : g.matchMedia('(prefers-color-scheme: dark)').matches;
+    try { wv.postMessage({ type: 'theme', dark: dark }); } catch (e) {}
+  }
+
   TH.start = function () {
     applyLang(TH.store.get('lang', (navigator.language || 'en').slice(0, 2) === 'fr' ? 'fr' : 'en'));
     Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
@@ -346,7 +355,10 @@
       var dark = root.dataset.theme ? root.dataset.theme === 'dark' : g.matchMedia('(prefers-color-scheme: dark)').matches;
       root.dataset.theme = dark ? 'light' : 'dark';
       try { localStorage.setItem('th.theme', root.dataset.theme); } catch (e) {}
+      notifyHostTheme();
     });
+    try { g.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', notifyHostTheme); } catch (e) {}
+    notifyHostTheme();
     document.getElementById('printBtn').addEventListener('click', function () { g.print(); });
     document.getElementById('menuBtn').addEventListener('click', function () {
       document.body.classList.contains('nav-open') ? closeNav() : openNav();

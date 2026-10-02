@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Native Windows shell for the Tolerance Handbook: WinForms + Microsoft Edge WebView2.
+       .NET Framework 4.8 ships with Windows 10/11, so the exe runs without installing a runtime.
+       The web app, the WebView2 managed libraries and the native loaders are embedded,
+       so the build output is ONE self-contained ToleranceHandbook.exe. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AssemblyName>ToleranceHandbook</AssemblyName>
+    <RootNamespace>ToleranceHandbook</RootNamespace>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.1.0</Version>
+    <Product>Tolerance Handbook</Product>
+    <AssemblyTitle>Tolerance Handbook</AssemblyTitle>
+    <Description>Offline engineering tolerance handbook (English / Français)</Description>
+    <Copyright>© 2026 thefhiter</Copyright>
+    <DebugType>none</DebugType>
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <WebRoot>$(MSBuildProjectDirectory)\..</WebRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile against WebView2 only; nothing is copied next to the exe (it is embedded below). -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" GeneratePathProperty="true"
+                      ExcludeAssets="runtime;native;build;buildTransitive" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(WebRoot)\index.html" LogicalName="web/index.html" />
+    <EmbeddedResource Include="$(WebRoot)\css\**\*.*" LogicalName="web/css/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="$(WebRoot)\js\**\*.*" LogicalName="web/js/%(RecursiveDir)%(Filename)%(Extension)" />
+
+    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.Core.dll" LogicalName="lib/Microsoft.Web.WebView2.Core.dll" />
+    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)\lib\net462\Microsoft.Web.WebView2.WinForms.dll" LogicalName="lib/Microsoft.Web.WebView2.WinForms.dll" />
+    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll" LogicalName="native/x64/WebView2Loader.dll" />
+    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x86\native\WebView2Loader.dll" LogicalName="native/x86/WebView2Loader.dll" />
+    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-arm64\native\WebView2Loader.dll" LogicalName="native/arm64/WebView2Loader.dll" />
+  </ItemGroup>
+
+</Project>
